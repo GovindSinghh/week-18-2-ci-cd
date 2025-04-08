@@ -1,24 +1,25 @@
-name: PR buid Test
+name: Build on PR
+
 on:
   pull_request:
     branches:
-      main
+      - master
 
-  jobs:
-    build:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-        - name: Set up Node.js
-          uses: actions/setup-node@v2
+      - name: Install Dependencies
+        run: npm install
 
-        - name: Install dependencies
-          run: npm install
+      - name: Generate prisma client
+        run: npm run db:generate
 
-        - name : Install Prisma client
-          run: npm run db:generate
-
-        - name: Build
-          run: npm run build
+      - name: Run Build
+        run: npm run build
